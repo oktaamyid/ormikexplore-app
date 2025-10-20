@@ -1,88 +1,50 @@
-# ORMIK Explore App
+# ORMIK Explore 2025 - Official Event Website
 
-A modern, responsive event web app for ORMIK Explore, built with [Next.js](https://nextjs.org), Tailwind CSS, and TypeScript.
+> **Note:** This is a public repository for showcasing the project structure and technologies used. The actual project files and sensitive configurations are private.
 
-## 🚀 Features
+A modern, responsive event web app for ORMIK Explore 2025, built with [Next.js](https://nextjs.org), Tailwind CSS, and TypeScript.
 
-- **Landing Page** with hero, countdown, and schedule widgets
-- **Dynamic Maintenance Mode** (with env config, bypass, and progress)
-- **Smooth Section Navigation** (scroll-to-section, responsive navbar)
-- **404 & Unauthorized Pages** with mascot and animation
-- **Mobile-first, Responsive Design**
-- **Customizable via `.env.local`**
+## 🚀 About The Project
 
-## 🛠️ Getting Started
+The official website for ORMIK Explore 2025 event, designed to provide an engaging and seamless experience for all participants. This project implements the UI design created by the Media Team of ORMIK Explore 2025 in Figma.
 
-### 1. Install dependencies
+## ✨ Key Features
 
-```bash
-pnpm install
-# or
-npm install
-# or
-yarn install
-```
+- **Dynamic Landing Page** with hero section, countdown timer, and interactive schedule widgets
+- **Smart Maintenance Mode** with configurable messages, bypass functionality, and progress tracking
+- **Smooth Section Navigation** with scroll-to-section and responsive navbar
+- **Custom Error Pages** featuring mascot and smooth animations (404 & Unauthorized)
+- **Mobile-first Responsive Design** optimized for all devices
+- **Environment-based Configuration** for easy deployment and customization
 
-### 2. Run the development server
+## 🛠️ Tech Stack
 
-```bash
-pnpm dev
-# or
-npm run dev
-# or
-yarn dev
-```
+- **Framework:** [Next.js 14](https://nextjs.org) (App Router)
+- **Language:** [TypeScript](https://www.typescriptlang.org)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com)
+- **Animation:** [Framer Motion](https://www.framer.com/motion/)
+- **Package Manager:** pnpm
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+## 🌟 Highlights
 
----
+- **Dynamic Maintenance System:** Secure and configurable maintenance mode with bypass options
+- **Performance Optimized:** Fast loading with Next.js optimization and asset caching
+- **Type Safety:** Full TypeScript implementation for better development experience
+- **Scalable Architecture:** Clean code structure with separated concerns
 
-## ⚙️ Environment Variables
+## 📱 Demo
 
-Edit `.env.local` to configure maintenance and other settings:
+� **Live Website:** [ORMIK Website 2025](https://ormik.nurulfikri.ac.id)
 
-```env
-NEXT_PUBLIC_MAINTENANCE_MODE=false
-NEXT_PUBLIC_MAINTENANCE_MESSAGE="Website sedang dalam proses maintenance untuk memberikan pengalaman yang lebih baik."
-NEXT_PUBLIC_MAINTENANCE_END_TIME="2025-08-20T05:15:00+07:00"
-NEXT_PUBLIC_MAINTENANCE_BYPASS_PASSWORD=yourpassword
-```
+## � Credits
 
-- Set `NEXT_PUBLIC_MAINTENANCE_MODE=true` to activate maintenance mode.
-- Set `NEXT_PUBLIC_MAINTENANCE_BYPASS_PASSWORD` for bypass access.
-
-### Maintenance Bypass
-
-- **Via URL:**  
-  Access `/maintenance?pass=yourpassword` to bypass maintenance (cookie will be set).
-
----
-
-## 🧩 Project Structure
-
-- `src/app/` – Next.js app directory (pages, layouts, routing)
-- `src/components/sections/` – Main page sections (Hero, About, Core Team, etc.)
-- `src/components/widgets/` – Countdown, Schedule, and other widgets
-- `src/components/pages/` – Special pages (Maintenance, NotFound, Unauthorized)
-- `src/utils/` – Utility functions (maintenance, config, etc.)
-
----
-
-## ✨ Customization
-
-- **Mascot:**  
-  Change mascot asset in `public/assets/mascot.png` (or update path in components).
-- **Section Content:**  
-  Edit components in `src/components/sections/` for your event.
-
----
+- **UI/UX Design:** Media Team - ORMIK Explore 2025
+- **Fullstack Development:** [oktaamyid](https://github.com/oktaamyid)
 
 ## 📝 License
 
-MIT
+This project is private and proprietary. The repository is made public for portfolio and demonstration purposes only.
 
 ---
 
-## 🙏 Credits
-
-Built with [Next.js](https://nextjs.org), [Tailwind CSS](https://tailwindcss.com), and [Framer Motion](https://www.framer.com/motion/).
+Built with ❤️ for ORMIK Explore 2025
