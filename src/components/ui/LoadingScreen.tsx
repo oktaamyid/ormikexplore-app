@@ -138,7 +138,7 @@ const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
           const warmUpBackgroundAssets = () => {
                const preloadBackground = () => {
                     backgroundAssets.forEach((src) => {
-                         const img = new Image();
+                         const img = new window.Image();
                          img.src = src;
                     });
                };
