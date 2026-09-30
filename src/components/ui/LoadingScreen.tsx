@@ -16,59 +16,68 @@ const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
      const [isCacheValid, setIsCacheValid] = useState(false);
 
      useEffect(() => {
-          // Debug cache info
-          console.log('Asset Cache Info:', AssetCache.getInfo());
+          const timers: number[] = [];
+
+          const schedule = (callback: () => void, delay: number) => {
+               const timer = window.setTimeout(callback, delay);
+               timers.push(timer);
+               return timer;
+          };
+
+          const finishLoading = (text = 'Runway Ready, Happy Exploring!') => {
+               setProgress(100);
+               setLoadingText(text);
+               schedule(() => {
+                    setIsVisible(false);
+                    schedule(onLoadingComplete, 500);
+               }, 300);
+          };
 
           // Check if assets are already cached
           const cacheValid = AssetCache.isValid();
           setIsCacheValid(cacheValid);
 
           if (cacheValid) {
-               // If cache is valid, skip loading and show quick success animation
                setLoadingText('Preparing Exploration System...');
                setProgress(90);
-
-               setTimeout(() => {
+               schedule(() => {
                     setProgress(100);
                     setLoadingText('Ready to Explore!');
-
-                    setTimeout(() => {
+                    schedule(() => {
                          setIsVisible(false);
-                         setTimeout(onLoadingComplete, 300); // Finish faster
-                    }, 800);
-               }, 500);
+                         schedule(onLoadingComplete, 300);
+                    }, 400);
+               }, 250);
 
-               return;
+               return () => {
+                    timers.forEach(clearTimeout);
+               };
           }
 
           let messageIndex = 0;
+          let completed = false;
 
-          // Critical assets to preload - moved inside useEffect to satisfy dependency array
-          const criticalAssets = [
-               // Core/Essential Assets
+          // Only preload lightweight assets required for initial visual stability.
+          const blockingAssets = [
                '/assets/logo-ormik.svg',
                '/assets/maskot.svg',
-               
-               // Background Assets (High Priority)
                '/assets/background/bg-horizontal.png',
+               '/assets/decorative/radar.svg',
+               '/assets/cloud.png',
+               '/assets/cloud-right.png',
+               '/assets/hexagonal.png'
+          ];
+
+          // Heavy/non-critical assets are warmed up in background and never block main content.
+          const backgroundAssets = [
                '/assets/background/bg-yellow.png',
                '/assets/background/building/center.png',
                '/assets/background/building/left.png',
                '/assets/background/building/right.png',
                '/assets/background/building/road.png',
-               
-               // Decorative Elements (Medium Priority)
-               '/assets/decorative/radar.svg',
                '/assets/decorative/iconexplore.svg',
-               '/assets/cloud.png',
-               '/assets/cloud-right.png',
-               '/assets/hexagonal.png',
-               
-               // Hero Section Assets
                '/assets/heading/ready-to-explore.svg',
                '/icons/ri_arrow-up-line.svg',
-               
-               // About Section Assets
                '/assets/heading/ourlogo.svg',
                '/assets/heading/ormik.svg',
                '/assets/heading/orientasi-akademik.svg',
@@ -77,18 +86,12 @@ const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
                '/assets/kerumunan.png',
                '/assets/ticket.svg',
                '/assets/logo-variations.svg',
-               
-               // Campus Explore Assets
                '/assets/heading/campus-a.svg',
                '/assets/heading/campus-b.svg',
                '/assets/campus/campus-a.png',
                '/assets/campus/campus-b.png',
-               
-               // Download Section Assets
                '/assets/button/guide-book.svg',
                '/assets/button/twibbon.svg',
-               
-               // Core Team Assets (Essential Members Only)
                '/assets/members/SC.png',
                '/assets/members/PO.png',
                '/assets/members/SEKRE.png',
@@ -125,37 +128,49 @@ const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
                setLoadingText(loadingMessages[messageIndex]);
           }, 800);
 
-          // Start preloading with AssetCache utility
-          AssetCache.preloadAssets(criticalAssets, (progressValue) => {
-               setProgress(Math.min(progressValue, 95));
+          const completeOnce = () => {
+               if (completed) return;
+               completed = true;
+               clearInterval(messageInterval);
+               finishLoading();
+          };
+
+          const warmUpBackgroundAssets = () => {
+               const preloadBackground = () => {
+                    backgroundAssets.forEach((src) => {
+                         const img = new Image();
+                         img.src = src;
+                    });
+               };
+
+               const idle = (window as Window & { requestIdleCallback?: (callback: IdleRequestCallback) => number }).requestIdleCallback;
+               if (idle) {
+                    idle(() => preloadBackground());
+               } else {
+                    schedule(preloadBackground, 0);
+               }
+          };
+
+          const maxWaitTimeout = schedule(completeOnce, 1600);
+
+          AssetCache.preloadAssets(blockingAssets, (progressValue) => {
+               setProgress(Math.min(progressValue, 90));
           })
-               .then((success) => {
-                    if (success) {
-                         // Save successful load to cache
-                         AssetCache.save(criticalAssets);
-                    }
-
-                    setProgress(100);
-                    setLoadingText('Runway Ready, Happy Exploring!');
-
-                    // Small delay before hiding
-                    setTimeout(() => {
-                         setIsVisible(false);
-                         setTimeout(onLoadingComplete, 800); // Wait for fade out animation
-                    }, 500);
+               .then(() => {
+                    clearTimeout(maxWaitTimeout);
+                    AssetCache.save([...blockingAssets, ...backgroundAssets]);
+                    completeOnce();
                })
                .catch(() => {
-                    // Even if some assets fail, continue
-                    setProgress(100);
-                    setLoadingText('Runway Ready, Happy Exploring!');
-                    setTimeout(() => {
-                         setIsVisible(false);
-                         setTimeout(onLoadingComplete, 800);
-                    }, 500);
+                    clearTimeout(maxWaitTimeout);
+                    completeOnce();
                });
+
+          warmUpBackgroundAssets();
 
           return () => {
                clearInterval(messageInterval);
+               timers.forEach(clearTimeout);
           };
      }, [onLoadingComplete]);
 
